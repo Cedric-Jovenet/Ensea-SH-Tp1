@@ -2,7 +2,7 @@
 Synthesis Practical Work
 
 ## Question 1
-char command[1024];
+- char command[1024];
   - Command buffer: A character array to store user input. It can hold up to 1023 characters plus a null terminator (\0).
 
 

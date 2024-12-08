@@ -38,13 +38,15 @@ int main() {
     while(1){
 		Prompt();
 		char userInput[1024];
+		
+		// wait for user input
 		fgets(userInput, sizeof(userInput), stdin);
 		
 		// remove '\n' (newline) from the command input
         userInput[strcspn(userInput, "\n")] = 0;	
 
         // if the command is fortune
-        if (strcmp(userInput, "fortune") ==0 )  {
+        if (strcmp(userInput, "fortune") == 0 )  {
             write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
         }
         

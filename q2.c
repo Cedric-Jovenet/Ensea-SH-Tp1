@@ -11,7 +11,7 @@
 #define FORTUNE "Today is what happened to yesterday \n"
 
 void Command(char *command){
-	pid_t pid = fork();                                  //fork a new process
+    pid_t pid = fork();                                  //fork a new process
     if(pid == -1){
         perror("fork");
         exit(EXIT_FAILURE);
@@ -36,11 +36,11 @@ void Prompt(){
 int main() {
     WelcomeMessage();
     while(1){
-		Prompt();
-		char userInput[1024];
-		fgets(userInput, sizeof(userInput), stdin);
+	Prompt();
+	char userInput[1024];
+	fgets(userInput, sizeof(userInput), stdin);
 		
-		// remove '\n' (newline) from the command input
+	// remove '\n' (newline) from the command input
         userInput[strcspn(userInput, "\n")] = 0;	
 
         // if the command is fortune

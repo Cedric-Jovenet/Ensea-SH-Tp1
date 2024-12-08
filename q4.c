@@ -11,58 +11,82 @@
 #define FORTUNE "Today is what happened to yesterday \n"
 #define EXIT_MESSAGE "Bye bye ...\n"
 
+void Exit(){
+	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
+	exit(EXIT_SUCCESS);
+}
+
+int Command(char *command){
+	pid_t pid = fork();  //fork a new process
+    if(pid == -1){
+        perror("fork");
+        exit(EXIT_FAILURE);
+    } else if(pid == 0){  //child process
+        execlp(command, command, (char *)NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {  //parent process
+		int status;
+        pid_t wpid = waitpid(pid, &status,0);
+        if (wpid == -1) {
+            perror("execlp");                            
+            exit(EXIT_FAILURE);
+        }
+        return(status);  // return the status of the child process
+    }
+}
+
+void WelcomeMessage(){
+    //Display of a welcome message
+    ssize_t ByteWrite = write(STDOUT_FILENO, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE));
+}
+
+void Prompt(int status){
+    char prompt[100];
+
+    if(WIFEXITED(status)){
+        snprintf(prompt, sizeof(prompt), "enseash [exit:%d] %% ", WEXITSTATUS(status));
+    } else if(WIFSIGNALED(status)){
+        snprintf(prompt, sizeof(prompt), "enseash [sign:%d] %% ", WTERMSIG(status));
+    } else {
+        snprintf(prompt, sizeof(prompt), "enseash %% ");
+    }
+
+    write(STDOUT_FILENO, prompt, strlen(prompt));
+}
 
 int main() {
-    char command[1024];
-    int status;
+    WelcomeMessage();
+    int status = 0;
 
-    // Display welcome message
-    write(STDOUT_FILENO, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE));
-    fflush(stdout);
+    while(1){
+		Prompt(status);
+		char userInput[1024];
+		int byteread;
 
-    while (1) {
+        //read user input
+        if((byteread = read(STDIN_FILENO,userInput, sizeof(userInput))) == 0){
+            //handle ctrl+d or end of file
+            Exit();
+        }
 		
-        // Modifier le prompt pour afficher l'exit status précédent
-        char prompt_with_status[1024];
-        snprintf(prompt_with_status, sizeof(prompt_with_status), "enseash [exit: %d] %% ", status);
-
-        // Afficher le prompt modifié
-        write(STDOUT_FILENO, prompt_with_status, strlen(prompt_with_status));
-
-
-        // wait for user input 
-        if (fgets(command, sizeof(command), stdin) == NULL) {
-            break; 
-        }	
-        
-         // remove '\n' (newline) from the command input
-        command[strcspn(command, "\n")] = 0;	
+		// remove '\n' (newline) from the command input
+        userInput[strcspn(userInput, "\n")] = 0;	
 
         // if the command is fortune
-        if (strcmp(command, "fortune") ==0 )  {
+        if (strcmp(userInput, "fortune") == 0) {
             write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
-
+            status = 0;  // Reset status 
+            continue;
         }
         
         // if the command is exit
-        if (strcmp(command, "exit") ==0 )  {
-            write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE));
-			break;
+        if (strcmp(userInput, "exit") == 0)  {
+			Exit();
         }
         
-        
-        else{ // for general commands //should not exit the shell after this
-		execlp(command, command, NULL); //execute the command and write it
-		}
-		
-		// Si le processus s'est terminé normalement
-       if (WIFEXITED(status)) {
-            status = WEXITSTATUS(status); // Récupérer le exit status
-       } else if (WIFSIGNALED(status)) {
-             status = WTERMSIG(status); // Récupérer le signal de terminaison
-       }
-		
-    }
-
-    return 0;
+        // Execute the entered command and store its status
+        status = Command(userInput);
+	}
+	return 0;
 }

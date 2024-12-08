@@ -16,7 +16,7 @@ void Prompt(){
     ssize_t ByteWrite = write(STDOUT_FILENO, PROMPT, strlen(PROMPT));
 }
 
-int main() {
+int main(){
     WelcomeMessage();
     Prompt();
 }

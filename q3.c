@@ -23,6 +23,7 @@ void Command(char *command){
         exit(EXIT_FAILURE);
     } else if(pid == 0){                                 //child process
         execlp(command, command, (char *)NULL);
+        perror("execlp");
         exit(EXIT_FAILURE);
     } else {                                             //parent process
         waitpid(pid, NULL, 0);                           //wait for the child to finish
@@ -44,19 +45,20 @@ int main() {
     while(1){
 		Prompt();
 		char userInput[1024];
-		
-		// Read user input
-        if (fgets(userInput, sizeof(userInput), stdin) == NULL) {
-            // Handle Ctrl+D (EOF)
+		int byteread;
+
+        //read user input
+        if((byteread = read(STDIN_FILENO,userInput, sizeof(userInput))) == 0){
+            //handle ctrl+d or end of file
             Exit();
         }
-		
-		// remove '\n' (newline) from the command input
-        userInput[strcspn(userInput, "\n")] = 0;	
+
+		userInput[byteread - 1] = '\0';  //write(STDOUT_FILENO, userInput, strlen(userInput));
 
         // if the command is fortune
         if (strcmp(userInput, "fortune") == 0 )  {
             write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
+            continue;
         }
         
         // if the command is exit

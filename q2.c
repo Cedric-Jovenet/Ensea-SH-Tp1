@@ -17,6 +17,7 @@ void Command(char *command){
         exit(EXIT_FAILURE);
     } else if(pid == 0){                                 //child process
         execlp(command, command, (char *)NULL);
+        perror("execlp");
         exit(EXIT_FAILURE);
     } else {                                             //parent process
         waitpid(pid, NULL, 0);                           //wait for the child to finish
@@ -48,6 +49,7 @@ int main() {
         // if the command is fortune
         if (strcmp(userInput, "fortune") == 0 )  {
             write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
+            continue;
         }
         
         //execute the entered command

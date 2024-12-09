@@ -46,4 +46,14 @@ Bye bye ...`
 
 - You can exit the shell with `crtl + d`
 - `stdin` can be typed as `>`; `stdout` as `<`
+
+```
+Welcome to ENSEA Tiny Shell.
+Type 'exit' to quit.
+enseash [exit:0|0ms] % ls > file.txt             
+enseash [exit:0|21ms] % wc -l < file.txt
+13
+enseash [exit:0|11ms] %
+```
+
 - 

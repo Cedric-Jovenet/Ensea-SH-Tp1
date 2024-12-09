@@ -1,7 +1,7 @@
 # Ensea-SH-Tp1
 Synthesis Practical Work
 
-Cédric JOVENET, Marin KERBORIOU
+Cédric JOVENET, Marin KERBORIOU 2G1 TP3
 
 
  ## Objectives : Develop a tiny shell, that displays exit codes and execution times of launched programs

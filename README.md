@@ -55,5 +55,3 @@ enseash [exit:0|21ms] % wc -l < file.txt
 13
 enseash [exit:0|11ms] %
 ```
-
-- 

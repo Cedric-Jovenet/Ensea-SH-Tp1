@@ -29,6 +29,16 @@ then, to lunch the shell :
 
 ## How to use this shell 
 
-You can use any command with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the prvious command.
+You can use any command, with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the prvious command.
+```
+Welcome to ENSEA Tiny Shell.
+Type 'exit' to quit.
+enseash [exit:0|0ms] % fortune
+Perfection is reached, not when there is no longer anything to add, but
+when there is no longer anything to take away.
+-- Antoine de Saint-Exupery
+enseash [exit:0|63ms] % exit
+Bye bye ...`
+```
 
-
+err

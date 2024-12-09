@@ -10,9 +10,9 @@ Cédric JOVENET, Marin KERBORIOU
 
  To compile the shell, go to the project directory and use : 
  
- gcc -o name_of_executable_file qX.c
+ `gcc -o name_of_executable_file qX.c`
  
 then, to lunch the shell : 
 
-./name_of_executable_fil
+`./name_of_executable_fil`
 

@@ -30,6 +30,7 @@ then, to lunch the shell :
 ## How to use this shell 
 
 You can use any command, with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the prvious command.
+The shell also shows custom welcome and exit messages.
 ```
 Welcome to ENSEA Tiny Shell.
 Type 'exit' to quit.
@@ -41,4 +42,8 @@ enseash [exit:0|63ms] % exit
 Bye bye ...`
 ```
 
-err
+#### List of other functionalities
+
+- You can exit the shell with `crtl + d`
+- `stdin` can be typed as `>`; `stdout` as `<`
+- 

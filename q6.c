@@ -22,9 +22,8 @@ int Command(char *command, int *status, long *exec_time){
         perror("fork");
         exit(EXIT_FAILURE);
     } else if(pid == 0){  // child process
-         // Tokenize the user input into command and arguments
         char *args[1024];
-        char *token = strtok(command, " ");
+        char *token = strtok(command, " ");  // Tokenize the command input by spaces
         int i = 0;
 
         // Store tokens into the args array

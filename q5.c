@@ -8,18 +8,14 @@
 
 #define PROMPT "enseash % "
 #define WELCOME_MESSAGE "Welcome to ENSEA Tiny Shell.\nType 'exit' to quit.\n"
-#define FORTUNE "Today is what happened to yesterday \n"
 #define EXIT_MESSAGE "Bye bye ...\n"
-
-void Exit(){
-	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
-	exit(EXIT_SUCCESS);
-}
+#define DIVISION_NS 1000000    // Division factor for execution time ns
+#define DIVISION_S 1000        // Division factor for execution time s
 
 int Command(char *command, int *status, long *exec_time){
 	struct timespec start, end;
 	
-	clock_gettime(CLOCK_MONOTONIC, &start);   //start timer
+	clock_gettime(CLOCK_MONOTONIC, &start);  //start timer
 
 	pid_t pid = fork();  //fork a new process
     if(pid == -1){
@@ -32,9 +28,14 @@ int Command(char *command, int *status, long *exec_time){
     } else {  //parent process
 		wait(status);  //wait for the child to finish
         clock_gettime(CLOCK_MONOTONIC, &end);  //end timer
-        *exec_time = (end.tv_sec - start.tv_sec) * 1000 + (end.tv_nsec - start.tv_nsec) / 1000000;  // Milliseconds
+        *exec_time = (end.tv_sec - start.tv_sec) * DIVISION_S + (end.tv_nsec - start.tv_nsec) / DIVISION_NS;  // Milliseconds
     }
     return *status;  // Return the status of the command
+}
+
+void Exit(){
+	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
+	exit(EXIT_SUCCESS);
 }
 
 void WelcomeMessage(){
@@ -43,15 +44,15 @@ void WelcomeMessage(){
 }
 
 void Prompt(int status, long exec_time){
-    char buf[50];
+    char prompt[100];
     
     if (WIFEXITED(status)) {
-        snprintf(buf, sizeof (buf), "enseash [exit:%d|%ldms] %% ", WEXITSTATUS(status), exec_time);
+        snprintf(prompt, sizeof (prompt), "enseash [exit:%d|%ldms] %% ", WEXITSTATUS(status), exec_time);
     } else if (WIFSIGNALED(status)) {
-        snprintf(buf, sizeof (buf), "enseash [exit:%d|%ldms] %% ", WTERMSIG(status), exec_time);
+        snprintf(prompt, sizeof (prompt), "enseash [exit:%d|%ldms] %% ", WTERMSIG(status), exec_time);
     }
     
-    write(STDOUT_FILENO, buf, strlen(buf));
+    write(STDOUT_FILENO, prompt, strlen(prompt));
 }
 
 int main() {
@@ -59,26 +60,19 @@ int main() {
     int status = 0;
     long exec_time = 0;
 
-
     while(1){
         Prompt(status, exec_time);
 		char userInput[1024];
-		int byteread;
+		int byteread = read(STDIN_FILENO,userInput, sizeof(userInput));
 
         //read user input
-        if((byteread = read(STDIN_FILENO,userInput, sizeof(userInput))) == 0){
+        if(byteread == 0){
             //handle ctrl+d or end of file
             Exit();
         }
 		
 		// remove '\n' (newline) from the command input
         userInput[strcspn(userInput, "\n")] = 0;	
-
-        // if the command is fortune
-        if (strcmp(userInput, "fortune") == 0) {
-            write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
-            continue;
-        }
         
         // if the command is exit
         if (strcmp(userInput, "exit") == 0)  {

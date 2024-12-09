@@ -9,8 +9,14 @@
 #define PROMPT "enseash % "
 #define WELCOME_MESSAGE "Welcome to ENSEA Tiny Shell.\nType 'exit' to quit.\n"
 #define EXIT_MESSAGE "Bye bye ...\n"
+#define DIVISION_NS 1000000    // Division factor for execution time ns
+#define DIVISION_S 1000        // Division factor for execution time s
 
-int Command(char *command){
+int Command(char *command, int *status, long *exec_time){
+	struct timespec start, end;
+	
+	clock_gettime(CLOCK_MONOTONIC, &start);  //start timer
+	
 	pid_t pid = fork();  //fork a new process
     if(pid == -1){
         perror("fork");
@@ -33,11 +39,12 @@ int Command(char *command){
             perror("execvp");
             exit(EXIT_FAILURE);
         }
-    } else {  // parent process
-        int status;
-        wait(&status);  // wait for the child to finish
-        return status;  // Return the status of the child process
+    } else {  //parent process
+		wait(status);  //wait for the child to finish
+        clock_gettime(CLOCK_MONOTONIC, &end);  //end timer
+        *exec_time = (end.tv_sec - start.tv_sec) * DIVISION_S + (end.tv_nsec - start.tv_nsec) / DIVISION_NS;  // Milliseconds
     }
+    return *status;  // Return the status of the command
 }
 
 void Exit(){
@@ -50,15 +57,25 @@ void WelcomeMessage(){
     ssize_t ByteWrite = write(STDOUT_FILENO, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE));
 }
 
-void Prompt(){
-    write(STDOUT_FILENO, PROMPT, strlen(PROMPT));
+void Prompt(int status, long exec_time){
+    char prompt[100];
+    
+    if (WIFEXITED(status)) {
+        snprintf(prompt, sizeof (prompt), "enseash [exit:%d|%ldms] %% ", WEXITSTATUS(status), exec_time);
+    } else if (WIFSIGNALED(status)) {
+        snprintf(prompt, sizeof (prompt), "enseash [exit:%d|%ldms] %% ", WTERMSIG(status), exec_time);
+    }
+    
+    write(STDOUT_FILENO, prompt, strlen(prompt));
 }
 
 int main() {
     WelcomeMessage();
+    int status = 0;
+    long exec_time = 0;
 
     while(1){
-        Prompt();
+        Prompt(status, exec_time);
 		char userInput[1024];
 		int byteread = read(STDIN_FILENO, userInput, sizeof(userInput));
 
@@ -77,7 +94,7 @@ int main() {
         }
         
         // Execute the entered command
-        Command(userInput);
+        Command(userInput, &status, &exec_time);
 	}
 	return 0;
 }

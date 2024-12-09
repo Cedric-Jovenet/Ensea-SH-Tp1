@@ -45,10 +45,10 @@ int main() {
     while(1){
 		Prompt();
 		char userInput[1024];
-		int byteread;
+		int byteread = read(STDIN_FILENO,userInput, sizeof(userInput));
 
         //read user input
-        if((byteread = read(STDIN_FILENO,userInput, sizeof(userInput))) == 0){
+        if(byteread == 0){
             //handle ctrl+d or end of file
             Exit();
         }

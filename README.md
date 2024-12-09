@@ -14,3 +14,7 @@ Synthesis Practical Work
   - Command buffer: A character array to store user input. It can hold up to 1023 characters plus a null terminator (\0).
 
 ## Question 3
+jbrvzbrov
+vrjznonn
+zkznjvn
+dvz,kvojN

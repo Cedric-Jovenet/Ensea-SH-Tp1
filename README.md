@@ -44,7 +44,7 @@ Bye bye ...`
 
 #### List of other functionalities
 
-- You can exit the shell with `crtl + d`
+- You can exit the shell with `crtl + d` or `exit`
 - `stdin` can be typed as `>`; `stdout` as `<`
 
 ```

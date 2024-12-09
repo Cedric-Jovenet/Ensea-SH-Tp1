@@ -8,7 +8,7 @@
 
 #define PROMPT "enseash % "
 #define WELCOME_MESSAGE "Welcome to ENSEA Tiny Shell.\nType 'exit' to quit.\n"
-#define EXIT_MESSAGE "Bye bye ...\n"
+#define EXIT_MESSAGE "Bye bye ...\n" 
 #define DIVISION_NS 1000000    // Division factor for execution time ns
 #define DIVISION_S 1000        // Division factor for execution time s
 

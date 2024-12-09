@@ -12,6 +12,11 @@ Cédric JOVENET, Marin KERBORIOU
 
 ### installing packages
 
+- Install fortune package : 
+
+ `sudo apt-get install fortune-mod fortunes`
+
+
 ### Compilation and lunch
 
  - To compile the shell, go to the project directory and use : 
@@ -23,5 +28,7 @@ then, to lunch the shell :
 `./name_of_executable_fil`
 
 ## How to use this shell 
+
+You can use any command with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the prvious command.
 
 

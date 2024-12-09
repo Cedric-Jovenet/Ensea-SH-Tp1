@@ -8,13 +8,7 @@
 
 #define PROMPT "enseash % "
 #define WELCOME_MESSAGE "Welcome to ENSEA Tiny Shell.\nType 'exit' to quit.\n"
-#define FORTUNE "Today is what happened to yesterday \n"
 #define EXIT_MESSAGE "Bye bye ...\n"
-
-void Exit(){
-	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
-	exit(EXIT_SUCCESS);
-}
 
 int Command(char *command){
 	pid_t pid = fork();  //fork a new process
@@ -34,6 +28,11 @@ int Command(char *command){
         }
         return(status);  // return the status of the child process
     }
+}
+
+void Exit(){
+	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
+	exit(EXIT_SUCCESS);
 }
 
 void WelcomeMessage(){
@@ -65,20 +64,13 @@ int main() {
 		int byteread;
 
         //read user input
-        if((byteread = read(STDIN_FILENO,userInput, sizeof(userInput))) == 0){
+        if((byteread = read(STDIN_FILENO, userInput, sizeof(userInput))) == 0){
             //handle ctrl+d or end of file
             Exit();
         }
 		
 		// remove '\n' (newline) from the command input
         userInput[strcspn(userInput, "\n")] = 0;	
-
-        // if the command is fortune
-        if (strcmp(userInput, "fortune") == 0) {
-            write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
-            status = 0;  // Reset status 
-            continue;
-        }
         
         // if the command is exit
         if (strcmp(userInput, "exit") == 0)  {
@@ -88,5 +80,4 @@ int main() {
         // Execute the entered command and store its status
         status = Command(userInput);
 	}
-	return 0;
 }

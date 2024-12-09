@@ -29,7 +29,7 @@ then, to lunch the shell :
 
 ## How to use this shell 
 
-You can use any command, with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the prvious command.
+You can use any command, with parameters or not. In the next prompt, the shell will show the exit code or exit signal along with the time it took to execute the previous command.
 The shell also shows custom welcome and exit messages.
 ```
 Welcome to ENSEA Tiny Shell.

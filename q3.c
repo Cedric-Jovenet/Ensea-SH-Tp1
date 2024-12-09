@@ -8,26 +8,26 @@
 
 #define PROMPT "enseash % "
 #define WELCOME_MESSAGE "Welcome to ENSEA Tiny Shell.\nType 'exit' to quit.\n"
-#define FORTUNE "Today is what happened to yesterday \n"
 #define EXIT_MESSAGE "Bye bye ...\n"
+
+
+void Command(char *command){
+	pid_t pid = fork();  //fork a new process
+    if(pid == -1){
+        perror("fork");
+        exit(EXIT_FAILURE);
+    } else if(pid == 0){  //child process
+        execlp(command, command, (char *)NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    } else {  //parent process
+        waitpid(pid, NULL, 0);  //wait for the child to finish
+    }
+}
 
 void Exit(){
 	ssize_t ByteWrite = write(STDOUT_FILENO, EXIT_MESSAGE, strlen(EXIT_MESSAGE)); //Display of an exit message
 	exit(EXIT_SUCCESS);
-}
-
-void Command(char *command){
-	pid_t pid = fork();                                  //fork a new process
-    if(pid == -1){
-        perror("fork");
-        exit(EXIT_FAILURE);
-    } else if(pid == 0){                                 //child process
-        execlp(command, command, (char *)NULL);
-        perror("execlp");
-        exit(EXIT_FAILURE);
-    } else {                                             //parent process
-        waitpid(pid, NULL, 0);                           //wait for the child to finish
-    }
 }
 
 void WelcomeMessage(){
@@ -53,13 +53,8 @@ int main() {
             Exit();
         }
 
-		userInput[byteread - 1] = '\0';  //write(STDOUT_FILENO, userInput, strlen(userInput));
-
-        // if the command is fortune
-        if (strcmp(userInput, "fortune") == 0 )  {
-            write(STDOUT_FILENO, FORTUNE, strlen(FORTUNE));
-            continue;
-        }
+		// remove '\n' (newline) from the command input
+        userInput[strcspn(userInput, "\n")] = 0;  
         
         // if the command is exit
         if (strcmp(userInput, "exit") == 0)  {

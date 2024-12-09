@@ -8,6 +8,12 @@ Cédric JOVENET, Marin KERBORIOU
 
  We created this shell progresively by following the questions of the TP, therefore the last version of our shell corresponds to the source code file named with the most avanced question number (q7.c).
 
+## Setting up the shell
+
+### installing packages
+
+### Compilation and lunch
+
  - To compile the shell, go to the project directory and use : 
  
  `gcc -o name_of_executable_file qX.c`
@@ -15,4 +21,7 @@ Cédric JOVENET, Marin KERBORIOU
 then, to lunch the shell : 
 
 `./name_of_executable_fil`
+
+## How to use this shell 
+
 
